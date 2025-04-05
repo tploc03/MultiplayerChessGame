@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +12,6 @@ public abstract class ChessGameController : MonoBehaviour
 
     [SerializeField] private BoardLayout startingBoardLayout;
 
-
     private ChessUIManager UIManager;
     private CameraSetup cameraSetup;
     private Board board;
@@ -21,7 +19,6 @@ public abstract class ChessGameController : MonoBehaviour
     protected ChessPlayer whitePlayer;
     protected ChessPlayer blackPlayer;
     protected ChessPlayer activePlayer;
-
 
     protected GameState state;
 
@@ -40,15 +37,14 @@ public abstract class ChessGameController : MonoBehaviour
     public void InitializeGame()
     {
         CreatePlayers();
+        board.SetDependencies(this); // Ensure dependencies are set
     }
-
 
     private void CreatePlayers()
     {
         whitePlayer = new ChessPlayer(TeamColor.White, board);
         blackPlayer = new ChessPlayer(TeamColor.Black, board);
     }
-
 
     public void StartNewGame()
     {
@@ -57,8 +53,8 @@ public abstract class ChessGameController : MonoBehaviour
         CreatePiecesFromLayout(startingBoardLayout);
         activePlayer = whitePlayer;
         GenerateAllPossiblePlayerMoves(activePlayer);
+        board.SetDependencies(this); // Ensure dependencies are set
         TryToStartThisGame();
-
     }
 
     protected abstract void SetGameState(GameState state);
@@ -69,8 +65,6 @@ public abstract class ChessGameController : MonoBehaviour
     {
         return state == GameState.Play;
     }
-
-
 
     private void CreatePiecesFromLayout(BoardLayout layout)
     {
@@ -85,8 +79,6 @@ public abstract class ChessGameController : MonoBehaviour
         }
     }
 
-
-
     public void CreatePieceAndInitialize(Vector2Int squareCoords, TeamColor team, Type type)
     {
         Piece newPiece = pieceCreator.CreatePiece(type).GetComponent<Piece>();
@@ -94,7 +86,10 @@ public abstract class ChessGameController : MonoBehaviour
 
         Material teamMaterial = pieceCreator.GetTeamMaterial(team);
         newPiece.SetMaterial(teamMaterial);
-
+        if (team == TeamColor.White)
+        {
+            newPiece.transform.rotation = Quaternion.Euler(0, 180, 0);
+        }
         board.SetPieceOnBoard(squareCoords, newPiece);
 
         ChessPlayer currentPlayer = team == TeamColor.White ? whitePlayer : blackPlayer;
@@ -105,8 +100,6 @@ public abstract class ChessGameController : MonoBehaviour
     {
         cameraSetup.SetupCamera(team);
     }
-
-
 
     private void GenerateAllPossiblePlayerMoves(ChessPlayer player)
     {
@@ -193,6 +186,4 @@ public abstract class ChessGameController : MonoBehaviour
     {
         activePlayer.RemoveMovesEnablingAttakOnPieceOfType<T>(GetOpponentToPlayer(activePlayer), piece);
     }
-
-
 }

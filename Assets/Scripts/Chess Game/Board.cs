@@ -11,7 +11,7 @@ public abstract class Board : MonoBehaviour
     [SerializeField] private Transform bottomLeftSquareTransform;
     [SerializeField] private float squareSize;
 
-	private Piece[,] grid;
+    private Piece[,] grid;
     private Piece selectedPiece;
     private ChessGameController chessController;
     private SquareSelectorCreator squareSelector;
@@ -61,9 +61,15 @@ public abstract class Board : MonoBehaviour
 
     public void OnSquareSelected(Vector3 inputPosition)
     {
+        if (chessController == null)
+        {
+            Debug.LogError("ChessController is not set.");
+            return;
+        }
+
         if (!chessController.CanPerformMove())
             return;
-        
+
         Vector2Int coords = CalculateCoordsFromPosition(inputPosition);
         Piece piece = GetPieceOnSquare(coords);
         if (selectedPiece)
@@ -85,17 +91,14 @@ public abstract class Board : MonoBehaviour
     public abstract void SelectedPieceMoved(Vector2 coords);
     public abstract void SetSelectedPiece(Vector2 coords);
 
-
-
     private void SelectPiece(Vector2Int coords)
     {
         Piece piece = GetPieceOnSquare(coords);
         chessController.RemoveMovesEnablingAttakOnPieceOfType<King>(piece);
-        SetSelectedPiece(coords);    
+        SetSelectedPiece(coords);
         List<Vector2Int> selection = selectedPiece.avaliableMoves;
         ShowSelectionSquares(selection);
     }
-   
 
     private void ShowSelectionSquares(List<Vector2Int> selection)
     {
@@ -114,8 +117,6 @@ public abstract class Board : MonoBehaviour
         selectedPiece = null;
         squareSelector.ClearSelection();
     }
-
-   
 
     private void EndTurn()
     {
@@ -155,7 +156,6 @@ public abstract class Board : MonoBehaviour
         return false;
     }
 
-
     public void SetPieceOnBoard(Vector2Int coords, Piece piece)
     {
         if (CheckIfCoordinatesAreOnBoard(coords))
@@ -181,7 +181,6 @@ public abstract class Board : MonoBehaviour
         }
     }
 
-
     public void PromotePiece(Piece piece)
     {
         TakePiece(piece);
@@ -193,7 +192,4 @@ public abstract class Board : MonoBehaviour
         selectedPiece = null;
         CreateGrid();
     }
-
- 
-
 }
