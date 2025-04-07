@@ -32,21 +32,36 @@ public class GameInitializer : MonoBehaviour
     public void InitializeMultiplayerController()
     {
         MultiplayerBoard board = Object.FindAnyObjectByType<MultiplayerBoard>();
-        MultiplayerChessGameController controller = Instantiate(multiplayerControllerPrefab);
-        controller.SetDependencies(cameraSetup, uiManager, board);
-        controller.InitializeGame();
-        controller.SetNetworkManager(networkManager);
-        networkManager.SetDependencies(controller);
-        board.SetDependencies(controller);
+        if (board)
+        {
+            MultiplayerChessGameController controller = Instantiate(multiplayerControllerPrefab);
+            controller.SetDependencies(cameraSetup, uiManager, board);
+            controller.CreatePlayers();
+            controller.SetMultiplayerDependencies(networkManager);
+            networkManager.SetDependencies(controller);
+            board.SetDependencies(controller);
+        }
+        //controller.InitializeGame();
+        //controller.SetNetworkManager(networkManager);
+        //networkManager.SetDependencies(controller);
+        //board.SetDependencies(controller);
     }
 
     public void InitializeSingleplayerController()
     {
         SinglePlayerBoard board = Object.FindAnyObjectByType<SinglePlayerBoard>();
-        SingleplayerChessGameController controller = Instantiate(singleplayerControllerPrefab);
-        controller.SetDependencies(cameraSetup, uiManager, board);
-        controller.InitializeGame();
-        board.SetDependencies(controller);
-        controller.StartNewGame();
+        if (board)
+        {
+            SingleplayerChessGameController controller = Instantiate(singleplayerControllerPrefab);
+            controller.SetDependencies(cameraSetup, uiManager, board);
+            controller.CreatePlayers();
+            board.SetDependencies(controller);
+            controller.StartNewGame();
+        }
+        //SingleplayerChessGameController controller = Instantiate(singleplayerControllerPrefab);
+        //controller.SetDependencies(cameraSetup, uiManager, board);
+        //controller.InitializeGame();
+        //board.SetDependencies(controller);
+        //controller.StartNewGame();
     }
 }

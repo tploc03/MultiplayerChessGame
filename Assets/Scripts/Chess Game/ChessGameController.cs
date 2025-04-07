@@ -22,12 +22,16 @@ public abstract class ChessGameController : MonoBehaviour
 
     protected GameState state;
 
+    protected abstract void SetGameState(GameState state);
+    public abstract void TryToStartThisGame();
+    public abstract bool CanPerformMove();
+
     private void Awake()
     {
         pieceCreator = GetComponent<PiecesCreator>();
     }
 
-    internal void SetDependencies(CameraSetup cameraSetup, ChessUIManager UIManager, Board board)
+    public void SetDependencies(CameraSetup cameraSetup, ChessUIManager UIManager, Board board)
     {
         this.cameraSetup = cameraSetup;
         this.UIManager = UIManager;
@@ -37,10 +41,10 @@ public abstract class ChessGameController : MonoBehaviour
     public void InitializeGame()
     {
         CreatePlayers();
-        board.SetDependencies(this); // Ensure dependencies are set
+        board.SetDependencies(this);
     }
 
-    private void CreatePlayers()
+    public void CreatePlayers()
     {
         whitePlayer = new ChessPlayer(TeamColor.White, board);
         blackPlayer = new ChessPlayer(TeamColor.Black, board);
@@ -50,18 +54,15 @@ public abstract class ChessGameController : MonoBehaviour
     {
         UIManager.OnGameStarted();
         SetGameState(GameState.Init);
+        //board.SetDependencies(this);
         CreatePiecesFromLayout(startingBoardLayout);
         activePlayer = whitePlayer;
         GenerateAllPossiblePlayerMoves(activePlayer);
-        board.SetDependencies(this); // Ensure dependencies are set
         TryToStartThisGame();
     }
 
-    protected abstract void SetGameState(GameState state);
-    public abstract void TryToStartThisGame();
-    public abstract bool CanPerformMove();
 
-    internal bool IsGameInProgress()
+    public bool IsGameInProgress()
     {
         return state == GameState.Play;
     }
@@ -96,7 +97,7 @@ public abstract class ChessGameController : MonoBehaviour
         currentPlayer.AddPiece(newPiece);
     }
 
-    internal void SetupCamera(TeamColor team)
+    public void SetupCamera(TeamColor team)
     {
         cameraSetup.SetupCamera(team);
     }
@@ -147,8 +148,8 @@ public abstract class ChessGameController : MonoBehaviour
 
     private void EndGame()
     {
-        SetGameState(GameState.Finished);
         UIManager.OnGameFinished(activePlayer.team.ToString());
+        SetGameState(GameState.Finished);
     }
 
     public void RestartGame()
@@ -176,13 +177,13 @@ public abstract class ChessGameController : MonoBehaviour
         return player == whitePlayer ? blackPlayer : whitePlayer;
     }
 
-    internal void OnPieceRemoved(Piece piece)
+    public void OnPieceRemoved(Piece piece)
     {
         ChessPlayer pieceOwner = (piece.team == TeamColor.White) ? whitePlayer : blackPlayer;
         pieceOwner.RemovePiece(piece);
     }
 
-    internal void RemoveMovesEnablingAttakOnPieceOfType<T>(Piece piece) where T : Piece
+    public void RemoveMovesEnablingAttakOnPieceOfType<T>(Piece piece) where T : Piece
     {
         activePlayer.RemoveMovesEnablingAttakOnPieceOfType<T>(GetOpponentToPlayer(activePlayer), piece);
     }

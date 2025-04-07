@@ -112,7 +112,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bottomLeftSquareTransform: {fileID: 5243153796922732544}
-  squareSize: 1.5
+  squareSize: 1.515
 --- !u!114 &7568751681067851692
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1489,8 +1489,8 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1829915185}
   - {fileID: 632363820}
+  - {fileID: 1829915185}
   - {fileID: 809642463}
   - {fileID: 108101730}
   - {fileID: 2038637979}
@@ -1651,13 +1651,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.36934084, y: 0.0014029836, z: -0.0005576058, w: 0.92929286}
-  m_LocalPosition: {x: 0, y: 12.71, z: -10.8}
+  m_LocalRotation: {x: 0.42261827, y: 0, z: 0, w: 0.9063079}
+  m_LocalPosition: {x: 0, y: 12.5, z: -9.3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 43.35, y: 0.17300001, z: 0}
+  m_LocalEulerAnglesHint: {x: 50, y: 0, z: 0}
 --- !u!114 &963194229
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1953,8 +1953,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   networkManager: {fileID: 1187257927}
-  whiteTeamButtonButton: {fileID: 616799139}
-  blackTeamButtonButton: {fileID: 1836488227}
+  whiteTeamButton: {fileID: 616799139}
+  blackTeamButton: {fileID: 1836488227}
   finishText: {fileID: 44846691}
   connectionStatus: {fileID: 2038637977}
   GameOverScreen: {fileID: 108101729}

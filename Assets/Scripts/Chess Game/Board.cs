@@ -16,6 +16,9 @@ public abstract class Board : MonoBehaviour
     private ChessGameController chessController;
     private SquareSelectorCreator squareSelector;
 
+    public abstract void SelectedPieceMoved(Vector2 coords);
+    public abstract void SetSelectedPiece(Vector2 coords);
+
     protected virtual void Awake()
     {
         squareSelector = GetComponent<SquareSelectorCreator>();
@@ -37,13 +40,13 @@ public abstract class Board : MonoBehaviour
         return bottomLeftSquareTransform.position + new Vector3(coords.x * squareSize, 0f, coords.y * squareSize);
     }
 
-    internal void OnSetSelectedPiece(Vector2Int coords)
+    public void OnSetSelectedPiece(Vector2Int coords)
     {
         Piece piece = GetPieceOnSquare(coords);
         selectedPiece = piece;
     }
 
-    internal void OnSelectedPieceMoved(Vector2Int intCoords)
+    public void OnSelectedPieceMoved(Vector2Int intCoords)
     {
         TryToTakeOppositePiece(intCoords);
         UpdateBoardOnPieceMove(intCoords, selectedPiece.occupiedSquare, selectedPiece, null);
@@ -61,13 +64,7 @@ public abstract class Board : MonoBehaviour
 
     public void OnSquareSelected(Vector3 inputPosition)
     {
-        if (chessController == null)
-        {
-            Debug.LogError("ChessController is not set.");
-            return;
-        }
-
-        if (!chessController.CanPerformMove())
+        if (!chessController || !chessController.CanPerformMove())
             return;
 
         Vector2Int coords = CalculateCoordsFromPosition(inputPosition);
@@ -88,8 +85,7 @@ public abstract class Board : MonoBehaviour
         }
     }
 
-    public abstract void SelectedPieceMoved(Vector2 coords);
-    public abstract void SetSelectedPiece(Vector2 coords);
+
 
     private void SelectPiece(Vector2Int coords)
     {
@@ -187,7 +183,7 @@ public abstract class Board : MonoBehaviour
         chessController.CreatePieceAndInitialize(piece.occupiedSquare, piece.team, typeof(Queen));
     }
 
-    internal void OnGameRestarted()
+    public void OnGameRestarted()
     {
         selectedPiece = null;
         CreateGrid();

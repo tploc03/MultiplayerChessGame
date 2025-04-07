@@ -11,8 +11,8 @@ public class ChessUIManager : MonoBehaviour
     [SerializeField] private NetworkManager networkManager;
 
     [Header("Buttons")]
-    [SerializeField] private Button whiteTeamButtonButton;
-    [SerializeField] private Button blackTeamButtonButton;
+    [SerializeField] private Button whiteTeamButton;
+    [SerializeField] private Button blackTeamButton;
 
     [Header("Texts")]
     [SerializeField] private Text finishText;
@@ -35,7 +35,7 @@ public class ChessUIManager : MonoBehaviour
 
 
 
-    internal void OnGameLaunched()
+    public void OnGameLaunched()
     {
         GameOverScreen.SetActive(false);
         TeamSelectionScreen.SetActive(false);
@@ -60,13 +60,13 @@ public class ChessUIManager : MonoBehaviour
         GameModeSelectionScreen.SetActive(false);
     }
 
-    internal void OnGameFinished(string winner)
+    public void OnGameFinished(string winner)
     {
 
         GameOverScreen.SetActive(true);
         TeamSelectionScreen.SetActive(false);
         ConnectScreen.SetActive(false);
-        finishText.text = string.Format("{0} won", winner);
+        finishText.text = string.Format("{0} Won!", winner);
     }
 
     public void OnConnect()
@@ -80,7 +80,7 @@ public class ChessUIManager : MonoBehaviour
         connectionStatus.text = status;
     }
 
-    internal void ShowTeamSelectionScreen()
+    public void ShowTeamSelectionScreen()
     {
         GameOverScreen.SetActive(false);
         TeamSelectionScreen.SetActive(true);
@@ -98,12 +98,17 @@ public class ChessUIManager : MonoBehaviour
 
     public void SelectTeam(int team)
     {
-        networkManager.SetPlayerTeam(team);
+        networkManager.SelectTeam(team);
     }
 
-    internal void RestrictTeamChoice(TeamColor occpiedTeam)
+    public void RestrictTeamChoice(TeamColor occpiedTeam)
     {
-        Button buttonToDeactivate = occpiedTeam == TeamColor.White ? whiteTeamButtonButton : blackTeamButtonButton;
+        if (occpiedTeam == null)
+        {
+            Debug.LogError("occupiedTeam is not set.");
+            return;
+        }
+        var buttonToDeactivate = occpiedTeam == TeamColor.White ? whiteTeamButton : blackTeamButton;
         buttonToDeactivate.interactable = false;
     }
 }

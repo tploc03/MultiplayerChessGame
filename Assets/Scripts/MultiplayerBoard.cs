@@ -17,7 +17,7 @@ public class MultiplayerBoard : Board
 
     public override void SelectedPieceMoved(Vector2 coords)
     {
-        Debug.LogError("RPC  select");
+        Debug.LogError("RPC select");
         photonView.RPC(nameof(RPC_OnSelectedPieceMoved), RpcTarget.AllBuffered, new object[] { coords });
     }
 

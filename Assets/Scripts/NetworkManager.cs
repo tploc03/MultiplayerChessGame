@@ -54,7 +54,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         {
             CustomRoomPropertiesForLobby = new string[] { LEVEL },
             MaxPlayers = MAX_PLAYERS,
-            CustomRoomProperties = new ExitGames.Client.Photon.Hashtable() { { LEVEL, playerLevel } }
+            CustomRoomProperties = new ExitGames.Client.Photon.Hashtable() { { LEVEL, playerLevel } },
         });
     }
 
@@ -83,33 +83,26 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     {
         Debug.Log("Player " + newPlayer.ActorNumber + " entered a room");
     }
+
+
     #endregion
 
     public void SetPlayerLevel(ChessLevel level)
     {
         playerLevel = level;
-        PhotonNetwork.LocalPlayer.SetCustomProperties(new ExitGames.Client.Photon.Hashtable() { { LEVEL, level } });
+        PhotonNetwork.LocalPlayer.SetCustomProperties(new ExitGames.Client.Photon.Hashtable { { LEVEL, level } });
     }
 
-    public void SetPlayerTeam(int teamInt)
+    public void SelectTeam(int team)
     {
-        if (PhotonNetwork.CurrentRoom.PlayerCount > 1)
-        {
-            var player = PhotonNetwork.CurrentRoom.GetPlayer(1);
-            if (player.CustomProperties.ContainsKey("team"))
-            {
-                var occupiedTeam = player.CustomProperties["team"];
-                teamInt = (int)occupiedTeam == 0 ? 1 : 0;
-            }
-        }
-        PhotonNetwork.LocalPlayer.SetCustomProperties(new ExitGames.Client.Photon.Hashtable() { { "team", teamInt } });
+        PhotonNetwork.LocalPlayer.SetCustomProperties(new ExitGames.Client.Photon.Hashtable { { "team", team } });
         gameInitializer.InitializeMultiplayerController();
-        chessGameController.SetupCamera((TeamColor)teamInt);
-        chessGameController.SetLocalPlayer((TeamColor)teamInt);
+        chessGameController.SetLocalPlayer((TeamColor)team);
         chessGameController.StartNewGame();
+        chessGameController.SetupCamera((TeamColor)team);
     }
 
-    internal bool IsRoomFull()
+    public bool IsRoomFull()
     {
         return PhotonNetwork.CurrentRoom.PlayerCount == PhotonNetwork.CurrentRoom.MaxPlayers;
     }
