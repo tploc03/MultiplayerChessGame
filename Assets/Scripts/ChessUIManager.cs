@@ -103,11 +103,6 @@ public class ChessUIManager : MonoBehaviour
 
     public void RestrictTeamChoice(TeamColor occpiedTeam)
     {
-        if (occpiedTeam == null)
-        {
-            Debug.LogError("occupiedTeam is not set.");
-            return;
-        }
         var buttonToDeactivate = occpiedTeam == TeamColor.White ? whiteTeamButton : blackTeamButton;
         buttonToDeactivate.interactable = false;
     }
