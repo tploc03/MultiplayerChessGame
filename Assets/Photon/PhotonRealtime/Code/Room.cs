@@ -20,8 +20,9 @@ namespace Photon.Realtime
     using System.Collections;
     using System.Collections.Generic;
     using ExitGames.Client.Photon;
+    using UnityEngine;
 
-    #if SUPPORTED_UNITY || NETFX_CORE
+#if SUPPORTED_UNITY || NETFX_CORE
     using Hashtable = ExitGames.Client.Photon.Hashtable;
     using SupportClass = ExitGames.Client.Photon.SupportClass;
     #endif
@@ -425,16 +426,23 @@ namespace Photon.Realtime
 
                 // invoking callbacks
                 this.LoadBalancingClient.InRoomCallbackTargets.OnRoomPropertiesUpdate(propertiesToSet);
-
             }
             else
             {
+                // Check if the client is connected and ready
+                if (!this.LoadBalancingClient.IsConnectedAndReady)
+                {
+                    //Debug.LogError("Operation SetProperties not called because client is not connected or not ready yet, client state: " + this.LoadBalancingClient.State);
+                    return false;
+                }
+
                 // send (sync) these new values if in online room
                 return this.LoadBalancingClient.OpSetPropertiesOfRoom(customProps, expectedProperties, webFlags);
             }
 
             return true;
         }
+
 
         /// <summary>
         /// Enables you to define the properties available in the lobby if not all properties are needed to pick a room.

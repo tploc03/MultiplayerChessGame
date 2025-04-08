@@ -26,10 +26,12 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     {
         if (PhotonNetwork.IsConnected)
         {
-            PhotonNetwork.JoinRandomRoom(new ExitGames.Client.Photon.Hashtable() { { LEVEL, playerLevel } }, MAX_PLAYERS);
+            Debug.LogError("Already connected, joining random room with level " + playerLevel);
+            //PhotonNetwork.JoinRandomRoom(new ExitGames.Client.Photon.Hashtable() { { LEVEL, playerLevel } }, MAX_PLAYERS);
         }
         else
         {
+            Debug.LogError("Connecting to server");
             PhotonNetwork.ConnectUsingSettings();
         }
     }
@@ -82,6 +84,15 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
         Debug.LogError("Player " + newPlayer.ActorNumber + " entered a room");
+    }
+
+    public override void OnLeftRoom()
+    {
+        Debug.LogError("Left the room");
+        // Reset any relevant game state here
+        // Example:
+        // isTeamSelected = false;
+        uiManager.OnGameLaunched(); // Or navigate back to the main menu
     }
 
 
