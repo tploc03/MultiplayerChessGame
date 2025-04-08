@@ -52,8 +52,8 @@ MonoBehaviour:
   - {fileID: 138226, guid: edd4f3477fd5a8b4599bf6c0dac39f1d, type: 3}
   - {fileID: 184594, guid: 1f7a3b3d104b8e44cb39f5356ae1d0bb, type: 3}
   - {fileID: 125018, guid: 9d3e9c36668dcfe44b524760a4c3a3b5, type: 3}
-  blackMaterial: {fileID: 2100000, guid: bb0c9adc9b877914399944d8e49a5ccc, type: 2}
-  whiteMaterial: {fileID: 2100000, guid: 18963c0a754034a4bafe6661929156fc, type: 2}
+  blackMaterial: {fileID: 2100000, guid: 77a85d1c1d55bbe489c3cc49a98c58a7, type: 2}
+  whiteMaterial: {fileID: 2100000, guid: cc290b1cc1b3a6743b4166d0faaf4edc, type: 2}
 --- !u!114 &5469029353631489072
 MonoBehaviour:
   m_ObjectHideFlags: 0

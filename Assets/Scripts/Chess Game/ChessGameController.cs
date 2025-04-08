@@ -44,7 +44,7 @@ public abstract class ChessGameController : MonoBehaviour
         board.SetDependencies(this);
     }
 
-    public void CreatePlayers()
+    public virtual void CreatePlayers()
     {
         whitePlayer = new ChessPlayer(TeamColor.White, board);
         blackPlayer = new ChessPlayer(TeamColor.Black, board);
@@ -112,7 +112,7 @@ public abstract class ChessGameController : MonoBehaviour
         return activePlayer.team == team;
     }
 
-    public void EndTurn()
+    public virtual void EndTurn()
     {
         GenerateAllPossiblePlayerMoves(activePlayer);
         GenerateAllPossiblePlayerMoves(GetOpponentToPlayer(activePlayer));
@@ -126,7 +126,7 @@ public abstract class ChessGameController : MonoBehaviour
         }
     }
 
-    private bool CheckIfGameIsFinished()
+    public bool CheckIfGameIsFinished()
     {
         Piece[] kingAttackingPieces = activePlayer.GetPieceAtackingOppositePiceOfType<King>();
         if (kingAttackingPieces.Length > 0)
