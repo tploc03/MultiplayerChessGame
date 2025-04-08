@@ -89,10 +89,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public override void OnLeftRoom()
     {
         Debug.LogError("Left the room");
-        // Reset any relevant game state here
-        // Example:
-        // isTeamSelected = false;
-        uiManager.OnGameLaunched(); // Or navigate back to the main menu
+        //isTeamSelected = false;
+        uiManager.OnGameLaunched();
     }
 
 
