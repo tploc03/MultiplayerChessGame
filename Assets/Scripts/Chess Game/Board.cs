@@ -64,6 +64,9 @@ public abstract class Board : MonoBehaviour
 
     public void OnSquareSelected(Vector3 inputPosition)
     {
+        if (PauseMenu.GameIsPaused)
+            return;
+
         if (!chessController || !chessController.CanPerformMove())
             return;
 
