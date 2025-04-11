@@ -17,13 +17,13 @@ public class MultiplayerBoard : Board
 
     public override void SelectedPieceMoved(Vector2 coords)
     {
-        Debug.LogError("RPC select");
+        //Debug.LogError("RPC select");
         photonView.RPC(nameof(RPC_OnSelectedPieceMoved), RpcTarget.AllBuffered, new object[] { coords });
     }
 
     public override void SetSelectedPiece(Vector2 coords)
     {
-        Debug.LogError("RPC select");
+        //Debug.LogError("RPC select");
         photonView.RPC(nameof(RPC_SetSelectedPiece), RpcTarget.AllBuffered, new object[] { coords });
     }
    
@@ -31,7 +31,7 @@ public class MultiplayerBoard : Board
     [PunRPC]
     private void RPC_SetSelectedPiece(Vector2 coords)
     {
-        Debug.LogError("ON RPC select");
+        //Debug.LogError("ON RPC select");
 
         Vector2Int intCoords = new Vector2Int(Mathf.RoundToInt(coords.x), Mathf.RoundToInt(coords.y));
         OnSetSelectedPiece(intCoords);
@@ -40,7 +40,7 @@ public class MultiplayerBoard : Board
     [PunRPC]
     private void RPC_OnSelectedPieceMoved(Vector2 coords)
     {
-        Debug.LogError("ON RPC move");
+        //Debug.LogError("ON RPC move");
 
         Vector2Int intCoords = new Vector2Int(Mathf.RoundToInt(coords.x), Mathf.RoundToInt(coords.y));
         OnSelectedPieceMoved(intCoords);

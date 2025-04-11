@@ -128,6 +128,7 @@ public abstract class ChessGameController : MonoBehaviour
 
     public bool CheckIfGameIsFinished()
     {
+        // Check for checkmate
         Piece[] kingAttackingPieces = activePlayer.GetPieceAtackingOppositePiceOfType<King>();
         if (kingAttackingPieces.Length > 0)
         {
@@ -140,7 +141,38 @@ public abstract class ChessGameController : MonoBehaviour
             {
                 bool canCoverKing = oppositePlayer.CanHidePieceFromAttack<King>(activePlayer);
                 if (!canCoverKing)
+                {
+                    Debug.Log("Checkmate!");
+                    return true; // Checkmate
+                }
+            }
+        }
+
+        // Check for stalemate
+        if (!CanMove(activePlayer))
+        {
+            if (kingAttackingPieces.Length == 0)
+            {
+                Debug.Log("Stalemate!");
+                return true; // Stalemate
+            }
+        }
+
+        return false;
+    }
+
+    // Helper function to check if a player has any legal moves
+    private bool CanMove(ChessPlayer player)
+    {
+        foreach (Piece piece in player.activePieces)
+        {
+            if (board.HasPiece(piece))
+            {
+                piece.SelectAvaliableSquares();
+                if (piece.avaliableMoves.Count > 0)
+                {
                     return true;
+                }
             }
         }
         return false;
