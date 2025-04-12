@@ -2,5 +2,5 @@
 
 public enum ChessLevel
 {
-	Beginner, Regular, Professional
+	Beginner, Regular, Professional, Master, InternationalMaster, GrandMaster, SuperGrandMaster
 }
