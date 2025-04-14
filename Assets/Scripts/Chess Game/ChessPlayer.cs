@@ -33,7 +33,7 @@ public class ChessPlayer
 	{
 		foreach (var piece in activePieces)
 		{
-			if(board.HasPiece(piece))
+			if (board.HasPiece(piece))
 				piece.SelectAvaliableSquares();
 		}
 	}
@@ -69,7 +69,7 @@ public class ChessPlayer
 
 	}
 
-	internal bool CheckIfIsAttacigPiece<T>() where T : Piece
+	public bool CheckIfIsAttacigPiece<T>() where T : Piece
 	{
 		foreach (var piece in activePieces)
 		{
@@ -99,7 +99,7 @@ public class ChessPlayer
 		return false;
 	}
 
-	internal void OnGameRestarted()
+	public void OnGameRestarted()
 	{
 		activePieces.Clear();
 	}
