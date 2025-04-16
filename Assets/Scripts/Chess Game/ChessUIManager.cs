@@ -13,7 +13,7 @@ public class ChessUIManager : MonoBehaviour
     [Header("Buttons")]
     [SerializeField] private Button whiteTeamButton;
     [SerializeField] private Button blackTeamButton;
-    [SerializeField] private Button continueButton;
+    // [SerializeField] private Button continueButton;
 
     [Header("Texts")]
     [SerializeField] private Text finishText;
@@ -27,8 +27,6 @@ public class ChessUIManager : MonoBehaviour
 
     [Header("Other UI")]
     [SerializeField] private Dropdown gameLevelSelection;
-
-    private bool isMultiplayer;
 
     private void Awake()
     {
@@ -48,7 +46,6 @@ public class ChessUIManager : MonoBehaviour
 
     public void OnSinglePlayerModeSelected()
     {
-        isMultiplayer = false;
         GameOverScreen.SetActive(false);
         TeamSelectionScreen.SetActive(false);
         ConnectScreen.SetActive(false);
@@ -57,7 +54,6 @@ public class ChessUIManager : MonoBehaviour
 
     public void OnMultiPlayerModeSelected()
     {
-        isMultiplayer = true;
         connectionStatus.gameObject.SetActive(true);
         GameOverScreen.SetActive(false);
         TeamSelectionScreen.SetActive(false);
@@ -71,15 +67,6 @@ public class ChessUIManager : MonoBehaviour
         TeamSelectionScreen.SetActive(false);
         ConnectScreen.SetActive(false);
         finishText.text = string.Format("{0} Won!", winner);
-        if (isMultiplayer)
-        {
-            continueButton.gameObject.SetActive(false);
-        }
-        else
-        {
-            continueButton.onClick.RemoveAllListeners();
-            continueButton.onClick.AddListener(OnContinue);
-        }
     }
 
     public void OnConnect()
@@ -118,18 +105,5 @@ public class ChessUIManager : MonoBehaviour
     {
         var buttonToDeactivate = occpiedTeam == TeamColor.White ? whiteTeamButton : blackTeamButton;
         buttonToDeactivate.interactable = false;
-    }
-
-    public void OnContinue()
-    {
-        if (isMultiplayer)
-        {
-            OnMultiPlayerModeSelected();
-            OnConnect();
-        }
-        else
-        {
-            OnSinglePlayerModeSelected();
-        }
     }
 }
