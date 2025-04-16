@@ -72,11 +72,13 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     {
         if (PhotonNetwork.CurrentRoom.PlayerCount > 1)
         {
-            var player = PhotonNetwork.CurrentRoom.GetPlayer(1);
-            if (player.CustomProperties.ContainsKey("team"))
+            foreach (var player in PhotonNetwork.CurrentRoom.Players)
             {
-                var occupiedTeam = player.CustomProperties["team"];
-                uiManager.RestrictTeamChoice((TeamColor)occupiedTeam);
+                if (player.Value != PhotonNetwork.LocalPlayer && player.Value.CustomProperties.ContainsKey("team"))
+                {
+                    var occupiedTeam = player.Value.CustomProperties["team"];
+                    uiManager.RestrictTeamChoice((TeamColor)occupiedTeam);
+                }
             }
         }
     }
@@ -89,10 +91,18 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public override void OnLeftRoom()
     {
         Debug.LogError("Left the room");
-        //isTeamSelected = false;
+        PhotonNetwork.LocalPlayer.SetCustomProperties(null);
         uiManager.OnGameLaunched();
     }
-
+    public override void OnPlayerLeftRoom(Player otherPlayer)
+    {
+        Debug.LogError("Player " + otherPlayer.ActorNumber + " left the room");
+        if (chessGameController != null && chessGameController.IsGameInProgress())
+        {
+            TeamColor winner = (TeamColor)PhotonNetwork.LocalPlayer.CustomProperties["team"];
+            uiManager.OnGameFinished(winner.ToString());
+        }
+    }
 
     #endregion
 

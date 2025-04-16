@@ -71,8 +71,15 @@ public class ChessUIManager : MonoBehaviour
         TeamSelectionScreen.SetActive(false);
         ConnectScreen.SetActive(false);
         finishText.text = string.Format("{0} Won!", winner);
-        continueButton.onClick.RemoveAllListeners();
-        continueButton.onClick.AddListener(OnContinue);
+        if (isMultiplayer)
+        {
+            continueButton.gameObject.SetActive(false);
+        }
+        else
+        {
+            continueButton.onClick.RemoveAllListeners();
+            continueButton.onClick.AddListener(OnContinue);
+        }
     }
 
     public void OnConnect()

@@ -41,10 +41,6 @@ public class GameInitializer : MonoBehaviour
             networkManager.SetDependencies(controller);
             board.SetDependencies(controller);
         }
-        //controller.InitializeGame();
-        //controller.SetNetworkManager(networkManager);
-        //networkManager.SetDependencies(controller);
-        //board.SetDependencies(controller);
     }
 
     public void InitializeSingleplayerController()
@@ -58,10 +54,5 @@ public class GameInitializer : MonoBehaviour
             board.SetDependencies(controller);
             controller.StartNewGame();
         }
-        //SingleplayerChessGameController controller = Instantiate(singleplayerControllerPrefab);
-        //controller.SetDependencies(cameraSetup, uiManager, board);
-        //controller.InitializeGame();
-        //board.SetDependencies(controller);
-        //controller.StartNewGame();
     }
 }
