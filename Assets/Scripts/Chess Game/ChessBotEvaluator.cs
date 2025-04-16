@@ -108,59 +108,40 @@ public static class ChessBotEvaluator
         {
             score += PieceValues[targetPiece.GetType()];
 
-            // Encourage taking higher value pieces
             if (PieceValues[targetPiece.GetType()] > PieceValues[piece.GetType()])
             {
-                score += 50;
+                score += 75;
+            }
+            else
+            {
+                score += 25;
             }
         }
 
-        // Positional Scores
-        if (piece is Pawn)
-        {
-            score += PawnPositionScores[moveCoords.x, moveCoords.y];
-        }
-        else if (piece is Knight)
-        {
-            score += KnightPositionScores[moveCoords.x, moveCoords.y];
-        }
-        else if (piece is Bishop)
-        {
-            score += BishopPositionScores[moveCoords.x, moveCoords.y];
-        }
-        else if (piece is Rook)
-        {
-            score += RookPositionScores[moveCoords.x, moveCoords.y];
-        }
-        else if (piece is Queen)
-        {
-            score += QueenPositionScores[moveCoords.x, moveCoords.y];
-        }
-        else if (piece is King)
-        {
-            score += isEndgame ? KingPositionScoresEndgame[moveCoords.x, moveCoords.y] : KingPositionScoresEarly[moveCoords.x, moveCoords.y];
-        }
+        score += GetPositionalScore(piece, moveCoords, isEndgame);
 
-        // Center control
         if (moveCoords.x >= 2 && moveCoords.x <= 5 && moveCoords.y >= 2 && moveCoords.y <= 5)
         {
-            score += 20;
+            score += 30;
             if (moveCoords.x >= 3 && moveCoords.x <= 4 && moveCoords.y >= 3 && moveCoords.y <= 4)
             {
-                score += 10;
+                score += 20;
             }
         }
 
-        // Penalize being under attack
-        if (IsSquareUnderAttack(moveCoords, piece.team, board))
-        {
-            score -= PieceValues[piece.GetType()] / 3;
-        }
-
-        // Reward protecting pieces
         if (IsProtectingPiece(moveCoords, piece, board))
         {
-            score += 30;
+            score += 40;
+        }
+
+        if (IsSquareUnderAttack(moveCoords, piece.team, board))
+        {
+            score -= PieceValues[piece.GetType()] / 2;
+        }
+
+        if (IsNearOwnKing(moveCoords, piece))
+        {
+            score += 10;
         }
 
         return score;
@@ -175,7 +156,7 @@ public static class ChessBotEvaluator
                 Piece piece = board.GetPieceOnSquare(new Vector2Int(x, y));
                 if (piece != null && piece.team != team)
                 {
-                    piece.SelectAvaliableSquares(); // Ensure moves are up-to-date
+                    piece.SelectAvaliableSquares();
                     if (piece.avaliableMoves.Contains(square))
                     {
                         return true;
@@ -220,7 +201,40 @@ public static class ChessBotEvaluator
                 }
             }
         }
-        // Adjust the threshold as needed
         return pieceCount <= 10;
+    }
+    private static bool IsNearOwnKing(Vector2Int moveCoords, Piece piece)
+    {
+        foreach (var direction in new Vector2Int[] {
+        Vector2Int.up, Vector2Int.down, Vector2Int.left, Vector2Int.right,
+        new Vector2Int(1, 1), new Vector2Int(-1, -1), new Vector2Int(-1, 1), new Vector2Int(1, -1)
+    })
+        {
+            Vector2Int adjacent = moveCoords + direction;
+            if (!piece.board.CheckIfCoordinatesAreOnBoard(adjacent)) continue;
+            Piece p = piece.board.GetPieceOnSquare(adjacent);
+            if (p != null && p is King && p.team == piece.team)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static int GetPositionalScore(Piece piece, Vector2Int coords, bool isEndgame)
+    {
+        if (piece is Pawn)
+            return PawnPositionScores[coords.x, coords.y];
+        else if (piece is Knight)
+            return KnightPositionScores[coords.x, coords.y];
+        else if (piece is Bishop)
+            return BishopPositionScores[coords.x, coords.y];
+        else if (piece is Rook)
+            return RookPositionScores[coords.x, coords.y];
+        else if (piece is Queen)
+            return QueenPositionScores[coords.x, coords.y];
+        else if (piece is King)
+            return isEndgame ? KingPositionScoresEndgame[coords.x, coords.y] : KingPositionScoresEarly[coords.x, coords.y];
+        return 0;
     }
 }

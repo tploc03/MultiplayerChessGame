@@ -9,7 +9,7 @@ using UnityEngine;
 public abstract class Piece : MonoBehaviour
 {
 	[SerializeField] private MaterialSetter materialSetter;
-	public Board board { protected get; set; }
+	public Board board { get; private set; }
 	public Vector2Int occupiedSquare { get; set; }
 	public TeamColor team { get; set; }
 	public bool hasMoved { get; private set; }

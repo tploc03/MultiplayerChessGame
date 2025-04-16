@@ -18,9 +18,7 @@ public class ChessBot
         var pieces = botPlayer.activePieces.Where(p => p.avaliableMoves.Count > 0).ToList();
         if (pieces.Count == 0) return;
 
-        Piece selectedPiece = null;
-        Vector2Int bestMove = Vector2Int.zero;
-        int bestScore = int.MinValue;
+        List<(Piece, Vector2Int, int)> scoredMoves = new List<(Piece, Vector2Int, int)>();
         bool isEndgame = ChessBotEvaluator.IsEndgame(botPlayer.board);
 
         foreach (var piece in pieces)
@@ -28,20 +26,21 @@ public class ChessBot
             foreach (var move in piece.avaliableMoves)
             {
                 int score = ChessBotEvaluator.EvaluateMove(move, piece, botPlayer.board, isEndgame);
-                if (score > bestScore)
-                {
-                    bestScore = score;
-                    selectedPiece = piece;
-                    bestMove = move;
-                }
+                scoredMoves.Add((piece, move, score));
             }
         }
 
-        if (selectedPiece != null)
-        {
-            var board = botPlayer.board;
-            board.OnSetSelectedPiece(selectedPiece.occupiedSquare);
-            board.OnSelectedPieceMoved(bestMove);
-        }
+        scoredMoves = scoredMoves.OrderByDescending(m => m.Item3).ToList();
+
+        if (scoredMoves.Count == 0) return;
+
+        int topN = Mathf.Min(3, scoredMoves.Count);
+        var topMoves = scoredMoves.Take(topN).ToList();
+
+        var chosenMove = topMoves[UnityEngine.Random.Range(0, topMoves.Count)];
+
+        botPlayer.board.OnSetSelectedPiece(chosenMove.Item1.occupiedSquare);
+        botPlayer.board.OnSelectedPieceMoved(chosenMove.Item2);
     }
+
 }
