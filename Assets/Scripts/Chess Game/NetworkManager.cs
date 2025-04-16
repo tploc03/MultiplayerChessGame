@@ -70,15 +70,12 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     private void PrepareTeamSelectionOptions()
     {
-        if (PhotonNetwork.CurrentRoom.PlayerCount > 1)
+        foreach (var player in PhotonNetwork.CurrentRoom.Players)
         {
-            foreach (var player in PhotonNetwork.CurrentRoom.Players)
+            if (player.Value.CustomProperties.ContainsKey("team"))
             {
-                if (player.Value != PhotonNetwork.LocalPlayer && player.Value.CustomProperties.ContainsKey("team"))
-                {
-                    var occupiedTeam = player.Value.CustomProperties["team"];
-                    uiManager.RestrictTeamChoice((TeamColor)occupiedTeam);
-                }
+                var occupiedTeam = player.Value.CustomProperties["team"];
+                uiManager.RestrictTeamChoice((TeamColor)occupiedTeam);
             }
         }
     }
@@ -86,6 +83,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
         Debug.LogError("Player " + newPlayer.ActorNumber + " entered a room");
+        PrepareTeamSelectionOptions();
     }
 
     public override void OnLeftRoom()
@@ -104,6 +102,14 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         }
     }
 
+    public override void OnPlayerPropertiesUpdate(Player targetPlayer, ExitGames.Client.Photon.Hashtable changedProps)
+    {
+        if (changedProps.ContainsKey("team"))
+        {
+            PrepareTeamSelectionOptions();
+        }
+    }
+
     #endregion
 
     public void SetPlayerLevel(ChessLevel level)
@@ -114,7 +120,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public void SelectTeam(int team)
     {
-        PhotonNetwork.LocalPlayer.SetCustomProperties(new ExitGames.Client.Photon.Hashtable { { "team", team } });
+        PhotonNetwork.LocalPlayer.SetCustomProperties(new ExitGames.Client.Photon.Hashtable { { "team", (TeamColor)team } });
         gameInitializer.InitializeMultiplayerController();
         chessGameController.SetLocalPlayer((TeamColor)team);
         chessGameController.StartNewGame();
