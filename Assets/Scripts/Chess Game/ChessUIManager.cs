@@ -106,4 +106,10 @@ public class ChessUIManager : MonoBehaviour
         var buttonToDeactivate = occpiedTeam == TeamColor.White ? whiteTeamButton : blackTeamButton;
         buttonToDeactivate.interactable = false;
     }
+    public void ResetTeamSelectionButtons()
+    {
+        whiteTeamButton.interactable = true;
+        blackTeamButton.interactable = true;
+    }
+
 }

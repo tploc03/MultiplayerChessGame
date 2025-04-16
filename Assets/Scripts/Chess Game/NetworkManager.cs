@@ -63,10 +63,15 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public override void OnJoinedRoom()
     {
         Debug.LogError("Player " + PhotonNetwork.LocalPlayer.ActorNumber + " joined a room with level: " + (ChessLevel)PhotonNetwork.CurrentRoom.CustomProperties[LEVEL]);
+
         gameInitializer.CreateMultiplayerBoard();
+
+        uiManager.ResetTeamSelectionButtons();
+
         PrepareTeamSelectionOptions();
         uiManager.ShowTeamSelectionScreen();
     }
+
 
     private void PrepareTeamSelectionOptions()
     {

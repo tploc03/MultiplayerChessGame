@@ -347,7 +347,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &108101730
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3359,7 +3359,6 @@ MonoBehaviour:
   networkManager: {fileID: 1187257927}
   whiteTeamButton: {fileID: 616799139}
   blackTeamButton: {fileID: 1836488227}
-  continueButton: {fileID: 0}
   finishText: {fileID: 44846691}
   connectionStatus: {fileID: 2038637977}
   GameOverScreen: {fileID: 108101729}
