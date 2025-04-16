@@ -128,7 +128,47 @@ public abstract class ChessGameController : MonoBehaviour
 
     public bool CheckIfGameIsFinished()
     {
-        // Check for checkmate
+        if (!whitePlayer.activePieces.Any(piece => piece is King))
+        {
+            Debug.Log("Black wins! White King is taken.");
+            return true;
+        }
+
+        if (!blackPlayer.activePieces.Any(piece => piece is King))
+        {
+            Debug.Log("White wins! Black King is taken.");
+            return true;
+        }
+
+        if (IsCheckmate())
+        {
+            Debug.Log("Checkmate!");
+            return true;
+        }
+
+        if (IsStalemate())
+        {
+            Debug.Log("Stalemate!");
+            return true;
+        }
+
+        if (IsInsufficientMaterial())
+        {
+            Debug.Log("Insufficient Material!");
+            return true;
+        }
+
+        // Check for threefold repetition
+        //if (IsThreefoldRepetition()) return true;
+
+        // Check for fifty-move rule
+        //if (IsFiftyMoveRule()) return true;
+
+        return false;
+    }
+
+    private bool IsCheckmate()
+    {
         Piece[] kingAttackingPieces = activePlayer.GetPieceAtackingOppositePiceOfType<King>();
         if (kingAttackingPieces.Length > 0)
         {
@@ -142,26 +182,64 @@ public abstract class ChessGameController : MonoBehaviour
                 bool canCoverKing = oppositePlayer.CanHidePieceFromAttack<King>(activePlayer);
                 if (!canCoverKing)
                 {
-                    Debug.Log("Checkmate!");
-                    return true; // Checkmate
+                    return true;
                 }
             }
         }
+        return false;
+    }
 
-        // Check for stalemate
+    private bool IsStalemate()
+    {
         if (!CanMove(activePlayer))
         {
+            Piece[] kingAttackingPieces = activePlayer.GetPieceAtackingOppositePiceOfType<King>();
             if (kingAttackingPieces.Length == 0)
             {
-                Debug.Log("Stalemate!");
-                return true; // Stalemate
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private bool IsInsufficientMaterial()
+    {
+        if (whitePlayer.activePieces.Count == 1 && blackPlayer.activePieces.Count == 1)
+        {
+            return true;
+        }
+
+        if (whitePlayer.activePieces.Count == 1 && whitePlayer.GetPiecesOfType<King>().Count() == 1 && blackPlayer.activePieces.Count == 2 && blackPlayer.GetPiecesOfType<King>().Count() == 1 && blackPlayer.GetPiecesOfType<Bishop>().Count() == 1)
+        {
+            return true;
+        }
+        if (blackPlayer.activePieces.Count == 1 && blackPlayer.GetPiecesOfType<King>().Count() == 1 && whitePlayer.activePieces.Count == 2 && whitePlayer.GetPiecesOfType<King>().Count() == 1 && whitePlayer.GetPiecesOfType<Bishop>().Count() == 1)
+        {
+            return true;
+        }
+
+        if (whitePlayer.activePieces.Count == 1 && whitePlayer.GetPiecesOfType<King>().Count() == 1 && blackPlayer.activePieces.Count == 2 && blackPlayer.GetPiecesOfType<King>().Count() == 1 && blackPlayer.GetPiecesOfType<Knight>().Count() == 1)
+        {
+            return true;
+        }
+        if (blackPlayer.activePieces.Count == 1 && blackPlayer.GetPiecesOfType<King>().Count() == 1 && whitePlayer.activePieces.Count == 2 && whitePlayer.GetPiecesOfType<King>().Count() == 1 && whitePlayer.GetPiecesOfType<Knight>().Count() == 1)
+        {
+            return true;
+        }
+
+        if (whitePlayer.activePieces.Count == 2 && whitePlayer.GetPiecesOfType<King>().Count() == 1 && whitePlayer.GetPiecesOfType<Bishop>().Count() == 1 && blackPlayer.activePieces.Count == 2 && blackPlayer.GetPiecesOfType<King>().Count() == 1 && blackPlayer.GetPiecesOfType<Bishop>().Count() == 1)
+        {
+            Bishop whiteBishop = (Bishop)whitePlayer.GetPiecesOfType<Bishop>().FirstOrDefault();
+            Bishop blackBishop = (Bishop)blackPlayer.GetPiecesOfType<Bishop>().FirstOrDefault();
+            if ((whiteBishop.occupiedSquare.x + whiteBishop.occupiedSquare.y) % 2 == (blackBishop.occupiedSquare.x + blackBishop.occupiedSquare.y) % 2)
+            {
+                return true;
             }
         }
 
         return false;
     }
 
-    // Helper function to check if a player has any legal moves
     private bool CanMove(ChessPlayer player)
     {
         foreach (Piece piece in player.activePieces)
@@ -180,7 +258,8 @@ public abstract class ChessGameController : MonoBehaviour
 
     private void EndGame()
     {
-        UIManager.OnGameFinished(activePlayer.team.ToString());
+        TeamColor winner = (whitePlayer.activePieces.Any(piece => piece is King)) ? TeamColor.White : TeamColor.Black;
+        UIManager.OnGameFinished(winner.ToString());
         SetGameState(GameState.Finished);
     }
 
